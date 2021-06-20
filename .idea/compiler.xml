@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="simulador_IR" target="16" />
+      <module name="simulador_IR" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
