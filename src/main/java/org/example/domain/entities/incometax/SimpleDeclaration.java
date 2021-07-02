@@ -8,6 +8,10 @@ public class SimpleDeclaration extends IncomeTaxDeclaration{
         double discountPercentage = 0.20;
         double discountLimit = 16754.34;
         double discount = taxPayer.getAnnualTaxableIncome() * discountPercentage;
+        return getSmallestDiscount(discount,discountLimit);
+    }
+
+    private double getSmallestDiscount(double discount, double discountLimit) {
         return Math.min(discount, discountLimit);
     }
 }

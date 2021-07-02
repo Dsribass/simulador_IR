@@ -2,50 +2,51 @@ package org.example.domain.entities.taxpayer;
 
 import org.example.domain.entities.expenses.Expense;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class TaxPayer {
-    private Integer id;
+    private String id;
+    private String name;
     private Double annualTaxableIncome;
     private Double taxWithholding;
-    private List<Expense> expenses = new ArrayList<>();
+    private Double totalExpenses;
 
-    public TaxPayer(Integer id,Double annualTaxableIncome, Double taxWithholding, List<Expense> expenses) {
+    public TaxPayer(String id, String name, Double annualTaxableIncome, Double taxWithholding) {
         this.id = id;
+        this.name = name;
         this.annualTaxableIncome = annualTaxableIncome;
         this.taxWithholding = taxWithholding;
-        this.expenses = expenses;
     }
 
-    public TaxPayer(Double annualTaxableIncome, Double taxWithholding) {
-        this(null,annualTaxableIncome,taxWithholding,null);
+    public TaxPayer(String name, Double annualTaxableIncome, Double taxWithholding) {
+        this(UUID.randomUUID().toString(),name,annualTaxableIncome,taxWithholding);
     }
 
     public TaxPayer() {
     }
 
-    public boolean addExpense(Expense expense) {
-        if(!expenses.contains(expense))
-            return this.expenses.add(expense);
-        return false;
-    }
-
-    public boolean removeExpense(Expense expense){
-        return this.expenses.remove(expense);
-    }
-
-    public List<Expense> getExpenses(){
-        return expenses;
-    }
-
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    public void setId() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+    }
+
+    public Double getTotalExpenses() {
+        return totalExpenses;
+    }
+
+    public void setTotalExpenses(Double totalExpenses) {
+        this.totalExpenses = totalExpenses;
     }
 
     public Double getAnnualTaxableIncome() {
@@ -62,6 +63,14 @@ public class TaxPayer {
 
     public void setTaxWithholding(Double taxWithholding) {
         this.taxWithholding = taxWithholding;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

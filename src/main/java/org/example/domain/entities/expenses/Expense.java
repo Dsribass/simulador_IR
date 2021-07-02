@@ -1,19 +1,39 @@
 package org.example.domain.entities.expenses;
 
+import org.example.domain.entities.taxpayer.TaxPayer;
+
 import java.util.Objects;
 
 public class Expense {
+    private Integer id;
     private ExpensesType type;
     private String name;
     private Double valueSpent;
 
-    public Expense(ExpensesType type, String name, Double valueSpent) {
+    TaxPayer taxPayer;
+
+    public Expense(Integer id, ExpensesType type, String name, Double valueSpent, TaxPayer taxPayer) {
+        this.id = id;
         this.type = type;
         this.name = name;
         this.valueSpent = valueSpent;
+        this.taxPayer = taxPayer;
     }
 
-    public Expense() {
+    public Expense(TaxPayer taxPayer) {
+        this.taxPayer = taxPayer;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public TaxPayer getTaxPayer() {
+        return taxPayer;
+    }
+
+    public String getTaxPayerId() {
+        return taxPayer.getId();
     }
 
     public ExpensesType getType() {
@@ -38,6 +58,10 @@ public class Expense {
 
     public void setValueSpent(Double valueSpent) {
         this.valueSpent = valueSpent;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Override

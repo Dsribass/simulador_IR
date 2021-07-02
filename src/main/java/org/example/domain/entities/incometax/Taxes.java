@@ -10,12 +10,23 @@ public class Taxes {
     }
 
     public Double getValueRangeTax(Double amountOfIncome){
-        if(maximumLimit != null && amountOfIncome > maximumLimit){
-            amountOfIncome = maximumLimit - minimumLimit;
-            return (amountOfIncome) * taxesRate;
-        }
+        if(isBetweenMinimumAndMaximumLimit(amountOfIncome))
+            return valueRangeTaxBetweenTwoLimits(amountOfIncome);
+        else
+            return valueRangeTaxWithNoMaximumLimit(amountOfIncome);
+    }
 
+    private Double valueRangeTaxWithNoMaximumLimit(Double amountOfIncome) {
         amountOfIncome -= minimumLimit;
+        return (amountOfIncome) * taxesRate;
+    }
+
+    private boolean isBetweenMinimumAndMaximumLimit(Double amountOfIncome) {
+        return maximumLimit != null && amountOfIncome > maximumLimit;
+    }
+
+    private Double valueRangeTaxBetweenTwoLimits(Double amountOfIncome) {
+        amountOfIncome = maximumLimit - minimumLimit;
         return (amountOfIncome) * taxesRate;
     }
 

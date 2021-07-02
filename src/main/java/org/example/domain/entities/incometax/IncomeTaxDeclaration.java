@@ -26,9 +26,7 @@ public abstract class IncomeTaxDeclaration {
 
     public final Double simulateIncomeTaxDeclaration(TaxPayer taxPayer){
         if(isBellowTheMinimumLimit(taxPayer.getAnnualTaxableIncome()))
-            throw new NotExceededMinimumLimitException
-                    ("The annual taxable income("+taxPayer.getAnnualTaxableIncome() +
-                    ") is lower than the minimum limit: "+ minimumLimitToSimulate);
+            return 0.00;
 
         Double discount = getDiscount(taxPayer);
         Double calculationBasis = taxPayer.getAnnualTaxableIncome() - discount;

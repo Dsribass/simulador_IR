@@ -1,44 +1,60 @@
 package org.example.application.main;
 
-import org.example.domain.entities.incometax.FullDeclaration;
-import org.example.domain.entities.incometax.IncomeTaxDeclaration;
-import org.example.domain.entities.incometax.SimpleDeclaration;
+import org.example.application.repository.InMemoryExpensesDAO;
+import org.example.application.repository.InMemoryTaxPayerDAO;
+import org.example.application.view.App;
 import org.example.domain.entities.expenses.Expense;
 import org.example.domain.entities.expenses.ExpensesType;
 import org.example.domain.entities.taxpayer.TaxPayer;
-import org.example.domain.usecases.taxpayers.TaxPayerUseCases;
+import org.example.domain.usecases.expenses.ExpensesDAO;
+import org.example.domain.usecases.expenses.ExpensesUseCases;
+import org.example.domain.usecases.incometax.FullDeclarationUseCase;
+import org.example.domain.usecases.incometax.SimpleDeclarationUseCase;
 import org.example.domain.usecases.taxpayers.TaxPayerDAO;
+import org.example.domain.usecases.taxpayers.TaxPayerUseCases;
 
 import java.util.Optional;
-import java.util.Scanner;
 
 public class Main {
-    private static final TaxPayerDAO taxPayerDAO = new TaxPayerDAO();
-    private static final TaxPayerUseCases taxPayerUseCases = new TaxPayerUseCases(taxPayerDAO);
+    private static final TaxPayerDAO taxPayerDAO = new InMemoryTaxPayerDAO();
+    public static final TaxPayerUseCases taxPayerUseCases = new TaxPayerUseCases(taxPayerDAO);
+    private static final ExpensesDAO expensesDAO = new InMemoryExpensesDAO();
+    public static final ExpensesUseCases expensesUseCases = new ExpensesUseCases(expensesDAO,taxPayerDAO);
+
+    public static final SimpleDeclarationUseCase simpleDeclarationUseCase = new SimpleDeclarationUseCase(taxPayerDAO);
+    public static final FullDeclarationUseCase fullDeclarationUseCase = new FullDeclarationUseCase(taxPayerDAO);
 
     public static void main(String[] args) {
-        Integer idTaxPlayer = createTaxPayer();
+        String idTaxPlayer1 = createTaxPayer("Daniel",120000.0,0.0);
+        String idTaxPlayer2 = createTaxPayer("José",80000.0,200.0);
 
-        Optional<TaxPayer> optionalTaxPayer = taxPayerUseCases.findOne(idTaxPlayer);
-        if(optionalTaxPayer.isEmpty()){
-            System.out.println("Contribuinte não encontrado");
-            return;
-        }
-        TaxPayer taxPayer = optionalTaxPayer.get();
-        System.out.println("\nInformações do Contribuinte");
-        System.out.println(taxPayer);
-        taxPayer.getExpenses().forEach(System.out::println);
+        TaxPayer taxpayer1 = taxPayerUseCases.findOne(idTaxPlayer1).get();
+        TaxPayer taxpayer2 = taxPayerUseCases.findOne(idTaxPlayer2).get();
 
-        simulateIncomeTax(taxPayer);
+        Expense expense = createExpenses(taxpayer1);
+        Expense expense2 = createExpenses(taxpayer1);
+        Expense expense3 = createExpenses(taxpayer2);
+
+        Double valueTotalExpenses1 = expensesUseCases.getValueTotalExpenses(taxpayer1);
+        Double valueTotalExpenses2 = expensesUseCases.getValueTotalExpenses(taxpayer2);
+        taxpayer1.setTotalExpenses(valueTotalExpenses1);
+        taxpayer2.setTotalExpenses(valueTotalExpenses2);
+        App.main(args);
+    }
+
+    private static Expense createExpenses(TaxPayer taxPayer) {
+        Expense expense = new Expense(taxPayer);
+        expense.setName("Clinica");
+        expense.setType(ExpensesType.HEALTH);
+        expense.setValueSpent(16000.00);
+        expensesDAO.insert(expense);
+        return expense;
     }
 
     private static void simulateIncomeTax(TaxPayer taxPayer) {
-        IncomeTaxDeclaration simpleDeclaration = new SimpleDeclaration();
-        IncomeTaxDeclaration fullDeclaration = new FullDeclaration();
-
         try {
-            Double valueToPayForSimpleDeclaration = simpleDeclaration.simulateIncomeTaxDeclaration(taxPayer);
-            Double valueToPayForFullDeclaration = fullDeclaration.simulateIncomeTaxDeclaration(taxPayer);
+            Double valueToPayForSimpleDeclaration = simpleDeclarationUseCase.simulateSimpleDeclaration(taxPayer);
+            Double valueToPayForFullDeclaration = fullDeclarationUseCase.simulateFullDeclaration(taxPayer);
 
             System.out.println("\n-----Imposto de Renda-----");
             System.out.printf("\nDeclaração Simples: R$%.2f",valueToPayForSimpleDeclaration);
@@ -48,62 +64,13 @@ public class Main {
         }
     }
 
-    private static Integer createTaxPayer() {
+    private static String createTaxPayer(String name,Double annualIncome, Double taxWithholding) {
         TaxPayer taxPayer = new TaxPayer();
-        Scanner scanner = new Scanner(System.in);
+        taxPayer.setId();
+        taxPayer.setName(name);
+        taxPayer.setAnnualTaxableIncome(annualIncome);
+        taxPayer.setTaxWithholding(taxWithholding);
 
-        System.out.println("Contribuinte:");
-        System.out.print("\nRenda anual: ");
-        taxPayer.setAnnualTaxableIncome(scanner.nextDouble());
-        System.out.print("Valor pago na fonte: ");
-        taxPayer.setTaxWithholding(scanner.nextDouble());
-
-        setExpenses(taxPayer, scanner);
-
-
-        try {
-            return taxPayerUseCases.insert(taxPayer);
-        }catch (Exception e){
-            System.err.println(e.getMessage());
-        };
-        return null;
+        return taxPayerUseCases.insert(taxPayer);
     }
-
-    private static void setExpenses(TaxPayer taxPayer, Scanner scanner) {
-        System.out.println("Despesas: ");
-        System.out.print("Quantos gastos deseja cadastrar(-1 para finalizar) ? ");
-        int length = scanner.nextInt();
-        for (int i = 0;i < length;i++){
-            System.out.println("\nTipo do Gasto");
-            System.out.println("1 - Saúde");
-            System.out.println("2 - Educação");
-            System.out.println("3 - Dependentes");
-            System.out.println("4 - Doações");
-            System.out.print("=> ");
-            int value = scanner.nextInt();
-            Expense expense = new Expense();
-            switch (value) {
-                case 1:
-                    expense.setType(ExpensesType.HEALTH);
-                    break;
-                case 2:
-                    expense.setType(ExpensesType.EDUCATION);
-                    break;
-                case 3:
-                    expense.setType(ExpensesType.DEPENDENTS);
-                    break;
-                case 4:
-                    expense.setType(ExpensesType.DONATIONS);
-                    break;
-            }
-            scanner.nextLine();
-            System.out.print("Nome do Gasto: ");
-            expense.setName(scanner.nextLine());
-            System.out.print("Valor do Gasto: ");
-            expense.setValueSpent(scanner.nextDouble());
-
-            taxPayer.addExpense(expense);
-        }
-    }
-
 }

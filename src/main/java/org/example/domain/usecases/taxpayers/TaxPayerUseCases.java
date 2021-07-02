@@ -1,44 +1,45 @@
 package org.example.domain.usecases.taxpayers;
 
 import org.example.domain.entities.taxpayer.TaxPayer;
-import org.example.domain.usecases.utils.ItemAlreadyExistsException;
-import org.example.domain.usecases.utils.ItemNotExistsException;
+import org.example.domain.usecases.utils.DAO;
+import org.example.domain.usecases.utils.EntityAlreadyExistsException;
+import org.example.domain.usecases.utils.EntityNotExistsException;
 
 import java.util.List;
 import java.util.Optional;
 
 public class TaxPayerUseCases {
-    TaxPayerDAO taxPayerDAO;
+    private TaxPayerDAO taxPayerDAO;
 
     public TaxPayerUseCases(TaxPayerDAO taxPayerDAO) {
         this.taxPayerDAO = taxPayerDAO;
     }
 
-    public Integer insert(TaxPayer taxPayer){
+    public String insert(TaxPayer taxPayer){
         if(taxPayer == null)
             throw new IllegalArgumentException("Tax Payer cannot be null");
 
         if(taxPayerDAO.findOne(taxPayer.getId()).isPresent())
-            throw new ItemAlreadyExistsException("Tax payer is already created in database");
+            throw new EntityAlreadyExistsException("Tax payer is already created in database");
 
         return taxPayerDAO.insert(taxPayer);
     }
 
-    public boolean update(Integer id, TaxPayer taxPayer) {
+    public boolean update(String id, TaxPayer taxPayer) {
         if(id == null || taxPayer == null)
             throw new IllegalArgumentException("Tax Payer/ID cannot be null");
 
         if(taxPayerDAO.findOne(id).isEmpty())
-            throw new ItemNotExistsException("Tax payer was not created in database");
+            throw new EntityNotExistsException("Tax payer was not created in database");
 
         return taxPayerDAO.update(id,taxPayer);
     }
 
-    public boolean deleteByKey(Integer id) {
+    public boolean deleteByKey(String id) {
         if(id == null) throw new IllegalArgumentException("ID Tax Payer cannot be null");
 
         if(taxPayerDAO.findOne(id).isEmpty())
-            throw new ItemNotExistsException("Tax payer was not created in database");
+            throw new EntityNotExistsException("Tax payer was not created in database");
 
         return taxPayerDAO.deleteByKey(id);
 
@@ -48,7 +49,7 @@ public class TaxPayerUseCases {
         if(taxPayer == null) throw new IllegalArgumentException("ID Tax Payer cannot be null");
 
         if(taxPayerDAO.findOne(taxPayer.getId()).isEmpty())
-            throw new ItemNotExistsException("Tax payer was not created in database");
+            throw new EntityNotExistsException("Tax payer was not created in database");
 
         return taxPayerDAO.delete(taxPayer);
     }
@@ -57,7 +58,7 @@ public class TaxPayerUseCases {
         return taxPayerDAO.fetchAll();
     }
 
-    public Optional<TaxPayer> findOne(Integer id) {
+    public Optional<TaxPayer> findOne(String id) {
         if(id == null) throw new IllegalArgumentException("ID Tax Payer cannot be null");
 
         return taxPayerDAO.findOne(id);
