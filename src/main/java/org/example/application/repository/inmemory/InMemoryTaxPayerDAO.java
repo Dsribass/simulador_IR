@@ -1,12 +1,9 @@
-package org.example.application.repository;
+package org.example.application.repository.inmemory;
 
-import org.example.domain.entities.expenses.Expense;
 import org.example.domain.entities.taxpayer.TaxPayer;
 import org.example.domain.usecases.taxpayers.TaxPayerDAO;
 
 import java.util.*;
-
-import static org.example.application.main.Main.expensesUseCases;
 
 public class InMemoryTaxPayerDAO implements TaxPayerDAO {
     public static Map<String, TaxPayer> taxPayerTable = new LinkedHashMap<>();
@@ -26,9 +23,6 @@ public class InMemoryTaxPayerDAO implements TaxPayerDAO {
 
     @Override
     public String insert(TaxPayer taxPayer) {
-        if (taxPayer.getId() == null) {
-            taxPayer.setId();
-        }
         taxPayerTable.put(taxPayer.getId(), taxPayer);
         return taxPayer.getId();
     }

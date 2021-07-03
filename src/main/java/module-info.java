@@ -1,6 +1,8 @@
 module org.example {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.sql;
+    requires sqlite.jdbc;
 
     exports org.example.application.view;
     exports org.example.application.controllers;

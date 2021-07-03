@@ -1,10 +1,9 @@
 package org.example.domain.entities.taxpayer;
 
-import org.example.domain.entities.expenses.Expense;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+
+import static org.example.application.main.Main.expensesUseCases;
 
 public class TaxPayer {
     private String id;
@@ -13,11 +12,16 @@ public class TaxPayer {
     private Double taxWithholding;
     private Double totalExpenses;
 
-    public TaxPayer(String id, String name, Double annualTaxableIncome, Double taxWithholding) {
+    public TaxPayer(String id, String name, Double annualTaxableIncome, Double taxWithholding, Double totalExpenses) {
         this.id = id;
         this.name = name;
         this.annualTaxableIncome = annualTaxableIncome;
         this.taxWithholding = taxWithholding;
+        this.totalExpenses = totalExpenses;
+    }
+
+    public TaxPayer(String id, String name, Double annualTaxableIncome, Double taxWithholding) {
+        this(id,name,annualTaxableIncome,taxWithholding,null);
     }
 
     public TaxPayer(String name, Double annualTaxableIncome, Double taxWithholding) {
@@ -42,7 +46,8 @@ public class TaxPayer {
     }
 
     public Double getTotalExpenses() {
-        return totalExpenses;
+        if(id == null) setId();
+        return expensesUseCases.getValueTotalExpenses(this);
     }
 
     public void setTotalExpenses(Double totalExpenses) {

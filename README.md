@@ -1,4 +1,12 @@
-### Simulador de Imposto de Renda
+# Simulador de Imposto de Renda
 
-- Trabalho desenvolvido na faculdade, apenas para simular Imposto de Renda anual de uma pessoa física,com base nas declaraçãoes Simples e Composta
+- Projeto realizado na faculdade para simular Imposto de Renda Anual, com base nas Declarações Simplificada e Completa.
 
+### Implementado com:
+
+- [Java](https://www.java.com/pt-BR/)
+- [JavaFX](https://openjfx.io/)
+- [Sqlite](https://www.sqlite.org/index.html)
+
+
+    

@@ -16,7 +16,7 @@ import static org.example.application.main.Main.expensesUseCases;
 
 public class ExpensesUIController {
     @FXML private TextField txtValueSpent;
-    @FXML private ComboBox<ExpensesType> comboExpenses;
+    @FXML private ComboBox<String> comboExpenses;
     @FXML private TextField txtName;
 
     TaxPayer taxPayer;
@@ -24,7 +24,10 @@ public class ExpensesUIController {
 
     @FXML
     public void initialize(){
-        comboExpenses.getItems().addAll(ExpensesType.values());
+        comboExpenses.getItems().add(ExpensesType.HEALTH.toString());
+        comboExpenses.getItems().add(ExpensesType.EDUCATION.toString());
+        comboExpenses.getItems().add(ExpensesType.DONATIONS.toString());
+        comboExpenses.getItems().add(ExpensesType.DEPENDENTS.toString());
     }
 
     public void setData(TaxPayer taxPayer,UIMode uiMode){
@@ -35,7 +38,7 @@ public class ExpensesUIController {
     public Integer getAndSaveInformationFromView() {
         Expense expense = new Expense(taxPayer);
         expense.setName(txtName.getText());
-        expense.setType(comboExpenses.getSelectionModel().getSelectedItem());
+        expense.setType(ExpensesType.toEnum(comboExpenses.getSelectionModel().getSelectedItem()));
         expense.setValueSpent(Double.valueOf(txtValueSpent.getText()));
 
         return expensesUseCases.insert(expense);

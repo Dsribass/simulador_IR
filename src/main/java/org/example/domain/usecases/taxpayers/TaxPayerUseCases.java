@@ -19,6 +19,10 @@ public class TaxPayerUseCases {
         if(taxPayer == null)
             throw new IllegalArgumentException("Tax Payer cannot be null");
 
+        if (taxPayer.getId() == null) {
+            taxPayer.setId();
+        }
+
         if(taxPayerDAO.findOne(taxPayer.getId()).isPresent())
             throw new EntityAlreadyExistsException("Tax payer is already created in database");
 

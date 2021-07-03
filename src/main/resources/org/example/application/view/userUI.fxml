@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="460.0" prefWidth="668.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.application.controllers.UserUIController">
+<AnchorPane prefHeight="460.0" prefWidth="668.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.application.controllers.UserUIController">
    <children>
       <Accordion layoutX="98.0" layoutY="179.0" />
       <Label layoutX="53.0" layoutY="62.0" text="Adicionar Usuario" AnchorPane.bottomAnchor="362.0" AnchorPane.leftAnchor="53.0" AnchorPane.rightAnchor="53.0">

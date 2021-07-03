@@ -1,4 +1,4 @@
-package org.example.application.repository;
+package org.example.application.repository.inmemory;
 import org.example.domain.entities.expenses.Expense;
 import org.example.domain.usecases.expenses.ExpensesDAO;
 

@@ -9,11 +9,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.example.application.Routes;
 import org.example.application.view.App;
+import org.example.domain.entities.expenses.Expense;
 import org.example.domain.entities.taxpayer.TaxPayer;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.example.application.main.Main.expensesUseCases;
 import static org.example.application.main.Main.taxPayerUseCases;
 
 public class MainUIController {
@@ -46,6 +49,9 @@ public class MainUIController {
 
     private void loadList() {
         List<TaxPayer> taxPayers = taxPayerUseCases.fetchAll();
+        for (TaxPayer taxPayer : taxPayers) {
+            taxPayer.setTotalExpenses(expensesUseCases.getValueTotalExpenses(taxPayer));
+        }
         snapshot.clear();
         snapshot.addAll(taxPayers);
     }
